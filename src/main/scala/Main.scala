@@ -9,10 +9,14 @@ import org.http4s.server.Server
 import org.http4s.server.middleware.Logger
 import org.typelevel.log4cats.LoggerFactory
 import org.typelevel.log4cats.slf4j.Slf4jFactory
+import services.ToDoService
+import cats.effect.unsafe.implicits.global
 
 object SimpleServer extends IOApp { // IOApp contains main inside
   given LoggerFactory[IO] = Slf4jFactory.create[IO]
-  private val toDoRoutes = ToDoRoutes()
+  private val toDoRoutes = {
+    ToDoRoutes(ToDoService.inMemory[IO]().unsafeRunSync()) // ToDo: unsafeRunSync not good here, replace with Resource
+  }
   
   val app: Kleisli[IO, Request[IO], Response[IO]] = Logger.httpRoutes[IO](
     logHeaders = true,
