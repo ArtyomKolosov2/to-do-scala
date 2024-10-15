@@ -20,7 +20,7 @@ class ToDoServiceInMemory[F[_]: Sync](entities: Ref[F, List[ToDo]])(
   override def getToDo(id: String): F[Option[ToDo]] =
     for
       toDoList <- entities.get
-      toDo = toDoList.find(x => x.id == id) // ToDo: If not found then GG, add proper handling of option (e.g. Exception or empty value or smt else)
+      toDo = toDoList.find(_.id == id)
     yield toDo
 
   override def addToDo(request: CreateToDo): F[Unit] =
