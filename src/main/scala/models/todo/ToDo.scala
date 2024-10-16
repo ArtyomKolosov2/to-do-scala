@@ -19,7 +19,7 @@ final case class ToDo(
 
 object ToDo:
   given Encoder[ToDo] = deriveEncoder[ToDo]
-  def fromCreateToDo[F[_]: Functor: Clock: Monad](request: CreateToDo, idGenerator: F[String]): F[ToDo] =
+  def fromCreateToDo[F[_]: Clock: Monad](request: CreateToDo, idGenerator: F[String]): F[ToDo] =
     for
       id <- idGenerator
       instant <- Clock[F].realTimeInstant
