@@ -14,8 +14,8 @@ import io.circe.syntax.EncoderOps
 import models.errors.ToDoError.*
 import models.errors.ToDoError.encoder
 
-class ToDoRoutes(service: ToDoService[IO]) extends Http4sDsl[IO]:
-  private val httpRoutes: HttpRoutes[IO] = HttpRoutes.of[IO] {
+class ToDoRoutes[F[_]: Concurrent](service: ToDoService[F]) extends Http4sDsl[F]:
+  private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] {
     case GET -> Root / "get" / id =>
       for
         toDoOption <- service.getToDo(id)
@@ -51,4 +51,4 @@ class ToDoRoutes(service: ToDoService[IO]) extends Http4sDsl[IO]:
   }
 
 object ToDoRoutes:
-  def apply(service: ToDoService[IO]): ToDoRoutes = new ToDoRoutes(service)
+  def apply[F[_]: Concurrent](service: ToDoService[F]): ToDoRoutes[F] = new ToDoRoutes(service)
